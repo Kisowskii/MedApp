@@ -1,0 +1,229 @@
+<div class="creating-container">
+  <mat-card color="accent">
+    <h1>Rejestracja Pacjenta</h1>
+
+    <h1>{{ patient.lastname }} {{ patient.name }}</h1>
+    <a mat-raised-button color="accent" routerLink="edit">Edytuj dane</a>
+    <button
+      mat-raised-button
+      color="accent"
+      *ngIf="!displayMyVisits"
+      (click)="onDisplayMyVisits()"
+    >
+      Wyświetl moje wizyty
+    </button>
+    <div *ngIf="displayMyVisits">
+      <h2>Moje Wizyty</h2>
+      <mat-accordion multi="true" *ngIf="myVisits.length > 0">
+        <mat-expansion-panel *ngFor="let visit of myVisits">
+          <mat-expansion-panel-header>
+            {{ visit.title }}
+          </mat-expansion-panel-header>
+          <p>Od {{ visit.start }}</p>
+          <p>Do {{ visit.end }}</p>
+
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="
+              onRemoveVisit(visit.title, visit.start, visit.end, visit.id)
+            "
+            *ngIf="!displayDelete"
+          >
+            Usuń wizyte
+          </button>
+
+          <button
+            mat-raised-button
+            color="accent"
+            type="submit"
+            (click)="
+              onDeleteVisit(visit.title, visit.start, visit.end, visit.id)
+            "
+            *ngIf="displayDelete"
+          >
+            Potwierdzam usunięcie wizyty
+          </button>
+          <button
+            mat-raised-button
+            color="warn"
+            (click)="OnCancel()"
+            *ngIf="displayDelete"
+          >
+            Anuluj
+          </button>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+    <br />
+    <hr />
+    <button
+      mat-raised-button
+      color="accent"
+      *ngIf="!displayDoctors"
+      (click)="onDisplayDoctors()"
+    >
+      Wyświetl Lekarzy
+    </button>
+    <div *ngIf="displayDoctors">
+      <h2>Spis Lekarzy</h2>
+      <mat-accordion multi="true" *ngIf="doctors.length > 0">
+        <mat-expansion-panel *ngFor="let doctor of doctors">
+          <mat-expansion-panel-header>
+            {{ doctor.lastname }} {{ doctor.name }}
+          </mat-expansion-panel-header>
+          <p>{{ doctor.specjalizations }}</p>
+          <p>{{ doctor.city }}</p>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <p class="info-text mat-body-1" *ngIf="doctors.length <= 0">
+        Brak lekarzy w bazie!
+      </p>
+    </div>
+    <hr />
+    <br />
+    <button
+      mat-raised-button
+      color="accent"
+      (click)="onDisplayFinding()"
+      *ngIf="!displaySeachingplace"
+    >
+      Wyszukaj wizyte
+    </button>
+    <div *ngIf="displaySeachingplace">
+      <h2>Wyszukaj wizyty</h2>
+      <form (submit)="onFindDoctor(doctorForm)" #doctorForm="ngForm">
+        <mat-card-row>
+          <mat-form-field appearance="outline">
+            <mat-label>Nazwisko </mat-label>
+            <input
+              matInput
+              type="text"
+              name="lastname"
+              ngModel
+              placeholder="Nazwisko"
+              #lastname="ngModel"
+            />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Specjalizacja </mat-label>
+
+            <mat-select [formControl]="cits" [(value)]="specSelect">
+              <mat-option
+                *ngFor="let spec of specjalizations"
+                [value]="spec"
+                name="specjalizations"
+                placeholder="Specjalizacja"
+                ngModel
+                ngDefaultControl
+              >
+                {{ spec }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Miasto </mat-label>
+            <mat-select [formControl]="cits" multiple [(value)]="citiesSelect">
+              <mat-option *ngFor="let city of cities" [value]="city">{{
+                city
+              }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <br />
+          <mat-form-field appearance="fill" class="example-form-field">
+            <mat-label>Wybierz date</mat-label>
+            <input
+              placeholder="Wybierz date"
+              name="date"
+              ngModel
+              matInput
+              [matDatepicker]="datepicker"
+              #date="ngModel"
+            />
+            <mat-hint>DD/MM/YYYY</mat-hint>
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="datepicker"
+            ></mat-datepicker-toggle>
+            <mat-datepicker #datepicker>
+              <mat-datepicker-actions>
+                <button mat-button matDatepickerCancel>Anuluj</button>
+                <button
+                  mat-raised-button
+                  color="primary"
+                  matDatepickerApply
+                  (click)="onCheckDate(doctorForm)"
+                >
+                  Zatwierdź
+                </button>
+              </mat-datepicker-actions>
+            </mat-datepicker>
+          </mat-form-field>
+          <br />
+          <br />
+          <button
+            mat-raised-button
+            color="accent"
+            type="submit"
+            *ngIf="displaySearching"
+          >
+            Szukaj wizyty
+          </button>
+          <div *ngIf="displayVisits">
+            <h2>Spis Lekarzy</h2>
+            <mat-accordion multi="true" *ngIf="filteredVisits.length > 0">
+              <mat-expansion-panel *ngFor="let visit of paginationVisits">
+                <mat-expansion-panel-header>
+                  {{ visit.displayVisit }}
+                </mat-expansion-panel-header>
+                {{ visit.lastname }} {{ visit.name }}
+                <p>{{ visit.specjalizations }}</p>
+                <p>{{ visit.city }}</p>
+
+                <button
+                  mat-raised-button
+                  color="accent"
+                  (click)="onAddVisit(visit.id, visit.visit)"
+                  *ngIf="!displayVerify"
+                >
+                  Umów wizyte
+                </button>
+                <button
+                  mat-raised-button
+                  color="accent"
+                  type="submit"
+                  (click)="onVerifyVisit(visit.id, visit.visit)"
+                  *ngIf="displayVerify"
+                >
+                  Potwierdzam Wizyte
+                </button>
+                <button
+                  mat-raised-button
+                  color="warn"
+                  (click)="OnCancel()"
+                  *ngIf="displayVerify"
+                >
+                  Anuluj
+                </button>
+              </mat-expansion-panel>
+            </mat-accordion>
+            <mat-paginator
+              #paginator
+              [length]="filteredVisits.length"
+              [pageSize]="postsPerPage"
+              [pageSizeOptions]="[5, 10, 25, 100]"
+              aria-label="Select page"
+              (page)="onChangePage($event)"
+              *ngIf="paginationVisits.length > 0"
+            >
+            </mat-paginator>
+            <p class="info-text mat-body-1" *ngIf="filteredVisits.length <= 0">
+              Brak lekarzy w bazie!
+            </p>
+          </div>
+        </mat-card-row>
+      </form>
+    </div>
+  </mat-card>
+</div>

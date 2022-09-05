@@ -1,0 +1,52 @@
+<div class="demo-app">
+  <div class="demo-app-sidebar">
+    <div class="demo-app-sidebar-section">
+      <button
+        mat-button
+        mat-flat-button
+        color="accent"
+        (click)="onSaveVisits()"
+      >
+        Zapisz zmiany
+      </button>
+
+      <button
+        mat-button
+        mat-flat-button
+        color="accent"
+        (click)="onDelete(doctor.id)"
+      >
+        Usuń konto
+      </button>
+
+      <a mat-button mat-raised-button color="accent" routerLink="edit">
+        Edytuj dane
+      </a>
+
+      <button
+        *ngIf="displayVisit"
+        mat-button
+        mat-flat-button
+        color="accent"
+        (click)="onDeleteVisit()"
+      >
+        Usuń wizytę
+      </button>
+
+      <button
+        *ngIf="displayVisit"
+        mat-button
+        mat-flat-button
+        color="accent"
+        (click)="onCheckVisit()"
+      >
+        Podgląd wizyty
+      </button>
+
+      <div class="demo-app-main">
+        <br />
+        <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+      </div>
+    </div>
+  </div>
+</div>

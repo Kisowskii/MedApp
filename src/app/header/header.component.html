@@ -1,0 +1,73 @@
+<mat-toolbar color="primary">
+  <span><a [routerLink]="[onRefresh()]"> Med App</a></span>
+  <span class="example-spacer"></span>
+
+  <span>
+    <a
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      [matMenuTriggerFor]="login"
+      *ngIf="!userIsAuthenticated"
+      >Login</a
+    ></span
+  >
+
+  <span class="example-spacer"></span>
+
+  <span>
+    <a
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      [matMenuTriggerFor]="signup"
+      *ngIf="!userIsAuthenticated"
+      >Załóż konto
+    </a></span
+  >
+  <span class="example-spacer"></span>
+  <span>
+    <a
+      routerLink="/"
+      routerLinkActive="active"
+      ariaCurrentWhenActive="page"
+      (click)="logout()"
+      *ngIf="userIsAuthenticated"
+      >Wyloguj</a
+    ></span
+  >
+
+  <mat-menu #login="matMenu">
+    <button mat-menu-item routerLink="/doctors" routerLinkActive="mat-accent">
+      Lekarz
+    </button>
+    <button mat-menu-item routerLink="/patient" routerLinkActive="mat-accent">
+      Pacjent
+    </button>
+    <button mat-menu-item routerLink="/admins" routerLinkActive="mat-accent">
+      Admin
+    </button>
+  </mat-menu>
+
+  <mat-menu #signup="matMenu">
+    <button
+      mat-menu-item
+      routerLink="signup/doctor"
+      routerLinkActive="mat-accent"
+    >
+      Lekarz
+    </button>
+    <button
+      mat-menu-item
+      routerLink="signup/patient"
+      routerLinkActive="mat-accent"
+    >
+      Pacjent
+    </button>
+    <button
+      mat-menu-item
+      routerLink="signup/admin"
+      routerLinkActive="mat-accent"
+    >
+      Admin
+    </button>
+  </mat-menu>
+</mat-toolbar>

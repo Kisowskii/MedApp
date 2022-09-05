@@ -1,0 +1,60 @@
+<div class="creating-container">
+  <mat-card color="accent">
+    <form (submit)="onSavePatient(patientForm)" #patientForm="ngForm">
+      <h1>Tworzenie nowego konta</h1>
+
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          name="login"
+          [ngModel]="patient?.login"
+          required
+          minlength="3"
+          placeholder="Twój login"
+          #login="ngModel"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          name="password"
+          [ngModel]="patient?.password"
+          required
+          minlength="3"
+          placeholder="Twoje hasło"
+          #password="ngModel"
+        />
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          name="name"
+          [ngModel]="patient?.name"
+          required
+          minlength="3"
+          placeholder="Twoje imie"
+          #name="ngModel"
+        />
+        <mat-error *ngIf="name.invalid">Proszę podać imię</mat-error>
+      </mat-form-field>
+      <mat-form-field>
+        <input
+          matInput
+          type="text"
+          name="lastname"
+          required
+          [ngModel]="patient?.lastname"
+          minlength="3"
+          placeholder="Twoje nazwisko"
+          #lastname="ngModel"
+        />
+        <mat-error *ngIf="lastname.invalid">Prosze podać nazwisko</mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="accent" type="submit">Zapisz</button>
+    </form>
+  </mat-card>
+</div>

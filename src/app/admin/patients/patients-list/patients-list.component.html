@@ -1,0 +1,25 @@
+<div class="creating-container">
+  <h1>Spis Pacjentów</h1>
+  <mat-accordion multi="true" *ngIf="patients.length > 0">
+    <mat-expansion-panel *ngFor="let patient of patients">
+      <mat-expansion-panel-header>
+        {{ patient.lastname }} {{ patient.name }}
+      </mat-expansion-panel-header>
+
+      <mat-action-row>
+        <a mat-button color="accent" [routerLink]="['edit', patient.id]"
+          >EDYTUJ</a
+        >
+        <button mat-button color="accent" (click)="onDelete(patient.id)">
+          USUŃ
+        </button>
+        <a mat-button color="accent" [routerLink]="['visit', patient.id]"
+          >GRAFIK</a
+        >
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+  <p class="info-text mat-body-1" *ngIf="patients.length <= 0">
+    Brak lekarzy w bazie!
+  </p>
+</div>
