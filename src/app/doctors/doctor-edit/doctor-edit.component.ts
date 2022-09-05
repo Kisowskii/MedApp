@@ -29,7 +29,7 @@ export class DoctorEditComponent implements OnInit {
 
     // Add our fruit
     if (value) {
-      this.specjalisations.push({ specjalisations: value });
+      this.specjalisations.push(value);
     }
 
     // Clear the input value

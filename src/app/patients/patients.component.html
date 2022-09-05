@@ -172,7 +172,7 @@
           </button>
           <div *ngIf="displayVisits">
             <h2>Spis Lekarzy</h2>
-            <mat-accordion multi="true" *ngIf="filteredVisits.length > 0">
+            <mat-accordion multi="true" *ngIf="paginationVisits.length > 0">
               <mat-expansion-panel *ngFor="let visit of paginationVisits">
                 <mat-expansion-panel-header>
                   {{ visit.displayVisit }}

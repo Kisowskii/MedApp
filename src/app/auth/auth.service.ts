@@ -60,7 +60,6 @@ export class AuthService {
           user
         )
         .subscribe((response) => {
-          console.log(response);
           const token = response.token;
           const id = response.id;
           this.token = token;
@@ -72,14 +71,12 @@ export class AuthService {
           }
         });
     } else if (window.location.href.indexOf('doctors') > -1) {
-      this.user = '/doctors';
       this.http
         .post<{ token: string; id: string }>(
           'http://localhost:3000/api/users/doctors/login',
           user
         )
         .subscribe((response) => {
-          console.log(response);
           const token = response.token;
           const id = response.id;
           this.token = token;
@@ -91,14 +88,12 @@ export class AuthService {
           }
         });
     } else if (window.location.href.indexOf('admins') > -1) {
-      this.user = '/admins';
       this.http
         .post<{ token: string; id: string }>(
           'http://localhost:3000/api/users/admins/login',
           user
         )
         .subscribe((response) => {
-          console.log(response);
           const token = response.token;
           const id = response.id;
           this.token = token;

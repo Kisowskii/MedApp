@@ -43,7 +43,6 @@ export class PatientsComponent implements OnInit {
   paginator: MatPaginator;
   specSelect: string;
   citiesSelect: string[];
-  removeVisit: any;
   postsPerPage = 10;
   currentPage = 1;
   today = new Date();
@@ -59,7 +58,6 @@ export class PatientsComponent implements OnInit {
   displaySearching = false;
   displaySeachingplace = false;
   displayVerify = false;
-  avaible = true;
   displayMyVisits = false;
   displayDelete = false;
   updatingVisitsDoctors = [];
@@ -68,22 +66,12 @@ export class PatientsComponent implements OnInit {
   avaibleVisits = [];
   FreeTermins = [];
   busyTermins = [];
-  uniqueTermins = [];
   paginationVisits = [];
-  docConvertSpec = [];
   cits = new FormControl('');
   cities: string[] = [];
   specjalizations = [];
   myVisits = [];
   private doctorsSub: Subscription;
-  campaignOne = new FormGroup({
-    start: new FormControl(new Date(year, month, 13)),
-    end: new FormControl(new Date(year, month, 16)),
-  });
-  campaignTwo = new FormGroup({
-    start: new FormControl(new Date(year, month, 15)),
-    end: new FormControl(new Date(year, month, 19)),
-  });
 
   constructor(
     public patientService: PatientsService,
@@ -99,7 +87,6 @@ export class PatientsComponent implements OnInit {
         this.doctors = doctors.sort((a, b) => a.name.localeCompare(b.name));
       });
     this.displayDoctors = true;
-    this.displayVisits = false;
     this.displayMyVisits = false;
     this.displaySeachingplace = false;
   }
@@ -107,7 +94,6 @@ export class PatientsComponent implements OnInit {
   onDisplayMyVisits() {
     this.myVisits = [];
     this.displayDoctors = false;
-    this.displayVisits = false;
     this.displayMyVisits = true;
     this.displaySeachingplace = false;
     if (this.updatingVisitsPatients.length < 1) {
@@ -124,14 +110,8 @@ export class PatientsComponent implements OnInit {
     this.displayDoctors = false;
     this.displayMyVisits = false;
     this.doctors.forEach((doc) => {
-      if (doc.specjalizations) {
-        doc.specjalizations.forEach((spec) => {
-          this.specjalizations.push(Object.values(spec));
-        });
-      }
-      if (doc.city) {
-        this.cities.push(doc.city);
-      }
+      if (doc.specjalizations) {this.specjalizations.push(doc.specjalizations);}
+      if (doc.city) {this.cities.push(doc.city);}
     });
     this.specjalizations = this.specjalizations
       .flat()
@@ -189,21 +169,12 @@ export class PatientsComponent implements OnInit {
     });
 
     this.doctors = this.doctorService.getArrayDoctors().filter((doc) => {
-      this.docConvertSpec = [];
-
       this.busyTermins = [];
-
-      if (doc.specjalizations) {
-        doc.specjalizations.forEach((spec) => {
-          this.docConvertSpec.push(Object.values(spec).toString());
-        });
-      }
 
       const checkTerminisBusy = (s) => {
         doc.visits.forEach((visit) => {
           let startTime = new Date(visit.start);
           let endTime = new Date(visit.end);
-
           if (
             startTime.getTime() <= s.getTime() &&
             endTime.getTime() > s.getTime()
@@ -218,82 +189,43 @@ export class PatientsComponent implements OnInit {
       if (
         !doc.visits ||
         doc.visits?.findIndex(
-          (visit) =>
-            visit.start.toString().slice(0, 10) ===
-            this.FreeTermins[0].toISOString().slice(0, 10)
-        ) < 0 ||
-        doc.visits?.findIndex(
-          (visit) =>
-            visit.end.toString().slice(0, 10) ===
-            this.FreeTermins[0].toISOString().slice(0, 10)
-        ) < 0
+          (visit) => visit.start.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0 ||
+        doc.visits?.findIndex((visit) => visit.end.toString().slice(0, 10) ===this.FreeTermins[0].toISOString().slice(0, 10)) < 0
       ) {
         this.FreeTermins.forEach((termin) => {
-          const correctHour = termin.getTime();
-          const correctData = new Date(correctHour);
-          const displayDate = `${correctData.getDate()}.${
-            correctData.getMonth() + 1
-          }.${correctData.getFullYear()}, godzina: ${correctData.getHours()}:${
-            (correctData.getMinutes() < 10 ? '0' : '') +
-            correctData.getMinutes()
-          }`;
-
           this.avaibleVisits.push({
             id: doc.id,
             name: doc.name,
             lastname: doc.lastname,
-            specjalizations: this.docConvertSpec,
-            visit: correctData.toISOString(),
+            specjalizations: doc.specjalizations,
+            visit: termin.toString(),
             city: doc.city,
-            displayVisit: displayDate,
+            displayVisit: `${termin.toLocaleDateString()}  godzina: ${termin.toLocaleTimeString()}`,
           });
         });
       } else {
         doc.visits.forEach((visit) => {
-          let startTime = new Date(visit.start);
-          let endTime = new Date(visit.end);
-
           const freeDate = new Date(this.FreeTermins[0]);
 
-          const visitDate = `${freeDate.getDate()}.${
-            freeDate.getMonth() + 1
-          }.${freeDate.getFullYear()}`;
-
-          const startDate = `${startTime.getDate()}.${
-            startTime.getMonth() + 1
-          }.${startTime.getFullYear()}`;
-
-          const endDate = `${endTime.getDate()}.${
-            endTime.getMonth() + 1
-          }.${endTime.getFullYear()}`;
-
-          if (visitDate === startDate || visitDate === endDate) {
+          if (
+            freeDate.toISOString().slice(0, 10) === visit.start.toString().slice(0, 10) ||
+            freeDate.toISOString().slice(0, 10) === visit.end.toString().slice(0, 10)
+          ) {
             this.FreeTermins.forEach((termin) => {
               checkTerminisBusy(termin);
 
-              if (this.busyTermins.includes(termin.getTime())) {
-              } else {
+              if (!this.busyTermins.includes(termin.getTime())) {
                 const correctHour = termin.getTime();
-
-                const correctData = new Date(correctHour);
-
-                const displayDate = `${correctData.getDate()}.${
-                  correctData.getMonth() + 1
-                }.${correctData.getFullYear()}, godzina: ${correctData.getHours()}:${
-                  (correctData.getMinutes() < 10 ? '0' : '') +
-                  correctData.getMinutes()
-                }`;
-
                 this.busyTermins.push(correctHour);
 
                 this.avaibleVisits.push({
                   id: doc.id,
                   name: doc.name,
                   lastname: doc.lastname,
-                  specjalizations: this.docConvertSpec,
-                  visit: correctData.toISOString(),
+                  specjalizations: doc.specjalizations,
+                  visit: termin.toString(),
                   city: doc.city,
-                  displayVisit: displayDate,
+                  displayVisit: `${termin.toLocaleDateString()}  godzina:${termin.toLocaleTimeString()}`,
                 });
               }
             });
@@ -302,7 +234,6 @@ export class PatientsComponent implements OnInit {
       }
       this.displayVisits = true;
 
-      //////////////////////
       this.filteredVisits = this.avaibleVisits
         .filter((visits) => {
           return (
