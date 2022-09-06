@@ -11,7 +11,6 @@ import { Visit } from './doctors.visit.model';
 export class DoctorsService {
   private doctors: Doctor[] = [];
   private doctorsUpdated = new Subject<Doctor[]>();
-
   private visitsUpdated = new Subject<Visit[]>();
 
   constructor(private http: HttpClient) {}
@@ -115,7 +114,7 @@ export class DoctorsService {
     };
     this.http
       .put('http://localhost:3000/api/doctors/' + doctorId, doctor)
-      .subscribe((response) => {
+      .subscribe(() => {
         const updatedDoctors = [...this.doctors];
         const oldDoctorIndex = updatedDoctors.findIndex(
           (p) => p.id === doctor.id
@@ -183,7 +182,7 @@ export class DoctorsService {
     };
     this.http
       .put('http://localhost:3000/api/doctors/' + doctorId, doctor)
-      .subscribe((response) => {
+      .subscribe(() => {
         const updatedDoctors = [...this.doctors];
         const oldDoctorIndex = updatedDoctors.findIndex(
           (p) => p.id === doctor.id

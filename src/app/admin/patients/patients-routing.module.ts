@@ -4,7 +4,7 @@ import { PatientsComponent } from '../../patients/patients.component';
 import { CanDeactivateGuard } from '../../can-deactivate.guard';
 import { PatientsListComponent } from './patients-list/patients-list.component';
 import { AuthGuard } from '../../auth/auth.guard';
-import { PatientEditComponent } from '../../patients/patient-edit/patient-edit.component';
+import { PatientEditComponent } from '../../shared/patient-edit/patient-edit.component';
 
 const patientsRoutes: Routes = [
   {

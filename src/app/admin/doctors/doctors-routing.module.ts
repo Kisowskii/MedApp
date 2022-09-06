@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DoctorEditComponent } from '../../doctors/doctor-edit/doctor-edit.component';
+import { DoctorEditComponent } from '../../shared/doctor-edit/doctor-edit.component';
 import { AuthGuard } from '../../auth/auth.guard';
 import { CanDeactivateGuard } from '../../can-deactivate.guard';
 

@@ -120,7 +120,7 @@ app.put("/api/doctors/:id", (req, res, next) => {
       }
     )
     .then(() => {
-      res.status(200).json({ message: "update Successfull" });
+      res.status(200).json();
     });
 });
 
@@ -129,10 +129,7 @@ app.delete(
   checkAuth("doctorsPaswword"),
   (req, res, next) => {
     doctors.deleteOne({ _id: ObjectId(req.params.id) }).then((result) => {
-      res.status(200).json({
-        message: "Posts fetched successfully",
-        doctors: result,
-      });
+      res.status(200).json({doctors: result,});
     });
   }
 );
@@ -188,7 +185,7 @@ app.put("/api/patients/:id", (req, res, next) => {
       }
     )
     .then(() => {
-      res.status(200).json({ message: "update Successfull" });
+      res.status(200).json();
     });
 });
 
@@ -197,11 +194,7 @@ app.delete(
   checkAuth("patientsPaswword"),
   (req, res, next) => {
     patients.deleteOne({ _id: ObjectId(req.params.id) }).then(() => {
-      res.status(200).json({
-        message: "Posts fetched successfully",
-
-        patients: result,
-      });
+      res.status(200).json({patients: result,});
     });
   }
 );

@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Doctor } from '../../shared/doctor.model';
-import { DoctorsService } from '../../shared/doctors.service';
+import { Doctor } from '../doctor.model';
+import { DoctorsService } from '../doctors.service';
 
 @Component({
   selector: 'app-doctor-edit',
@@ -51,11 +51,7 @@ export class DoctorEditComponent implements OnInit {
         this.mode = 'edit'
       this.doctorId = paramMap.get('doctorId');
       this.doctorsService.getDoctor(this.doctorId).subscribe((doctorData) => {
-        if (doctorData.specjalizations) {
-          doctorData.specjalizations.forEach((spec) => {
-            this.docConvertSpec.push(Object.values(spec));
-          });
-        }
+
         this.doctor = {
           id: doctorData._id,
           login: doctorData.login,
@@ -63,7 +59,7 @@ export class DoctorEditComponent implements OnInit {
           name: doctorData.name,
           lastname: doctorData.lastname,
           city: doctorData.city,
-          specjalizations: this.docConvertSpec,
+          specjalizations: doctorData.specjalizations,
           visits: doctorData.visits,
         };
       });

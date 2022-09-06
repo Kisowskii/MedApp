@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Patient } from '../../shared/patient.model';
-import { PatientsService } from '../../shared/patients.service';
+import { Patient } from '../patient.model';
+import { PatientsService } from '../patients.service';
 
 @Component({
   selector: 'app-patient-edit',

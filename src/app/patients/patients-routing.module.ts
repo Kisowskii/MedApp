@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from '../auth/auth.guard';
-import { PatientEditComponent } from './patient-edit/patient-edit.component';
+import { PatientEditComponent } from '../shared/patient-edit/patient-edit.component';
 import { PatientsComponent } from './patients.component';
 
 const Patientroutes: Routes = [

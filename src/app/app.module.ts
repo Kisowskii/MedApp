@@ -9,7 +9,7 @@ import { DoctorsModule } from './admin/doctors/doctors.module';
 import { PatientsModule } from './admin/patients/patients.module';
 
 import { Router } from '@angular/router';
-import { SharedModule } from './shared/shared/shared.module';
+import { SharedModule } from './shared/shared.module';
 
 @NgModule({
 
