@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { DoctorsService } from '../doctors.service';
+import { DoctorsService } from '../../../shared/doctors.service';
 
-import { Doctor } from '../doctors-models/doctor.model';
+import { Doctor } from '../../../shared/doctor.model';
 
 @Component({
   selector: 'app-doctor-list',

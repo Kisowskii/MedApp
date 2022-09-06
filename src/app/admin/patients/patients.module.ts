@@ -19,14 +19,13 @@ import {
 } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 
-import { PatientsCreateComponent } from './patients-create/patients-create.component';
 import { PatientsListComponent } from './patients-list/patients-list.component';
 
 import { PatientsRoutingModule } from './patients-routing.module';
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [PatientsCreateComponent, PatientsListComponent],
+  declarations: [ PatientsListComponent],
   imports: [
     CommonModule,
 

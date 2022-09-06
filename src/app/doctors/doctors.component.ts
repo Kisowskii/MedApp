@@ -6,6 +6,7 @@ import {
   EventClickArg,
   EventApi,
   FullCalendarElement,
+  defineFullCalendarElement,
 } from '@fullcalendar/web-component';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -13,12 +14,14 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import allLocales from '@fullcalendar/core/locales-all';
 import { INITIAL_EVENTS, createEventId } from './event-utils';
-import { Doctor } from '../admin/doctors/doctors-models/doctor.model';
-import { Visit } from '../admin/doctors/doctors-models/doctors.visit.model';
-import { DoctorsService } from '../admin/doctors/doctors.service';
+import { Doctor } from '../shared/doctor.model';
+import { Visit } from '../shared/doctors.visit.model';
+import { DoctorsService } from '../shared/doctors.service';
 import { AuthService } from '../auth/auth.service';
-import { PatientsService } from '../admin/patients/patients.service';
-import { Patient } from '../admin/patients/patients-models/patient.model';
+import { PatientsService } from '../shared/patients.service';
+import { Patient } from '../shared/patient.model';
+
+defineFullCalendarElement();
 
 @Component({
   selector: 'app-doctors',
@@ -32,11 +35,11 @@ export class DoctorsComponent implements OnInit {
   updatingVisitsDoctors = [];
   calendarVisible = true;
   private doctorId: string;
-  patientId: any;
-  start: any;
-  end: any;
-  title: any;
-  eventRemover: any;
+  patientId: string;
+  start: Date;
+  end: Date;
+  title: string;
+  event: any;
   patient: Patient;
   doctor: Doctor;
   visits: Visit[] = [];
@@ -105,10 +108,10 @@ export class DoctorsComponent implements OnInit {
     this.updatingVisitsDoctors = [];
     this.updatingVisitsPatients = [];
     this.patientId = clickInfo.event._def.publicId;
-    this.start = clickInfo.event.start;
-    this.end = clickInfo.event.end;
+    this.start = new Date(clickInfo.event.start);
+    this.end = new Date(clickInfo.event.end);
     this.title = clickInfo.event.title;
-    this.eventRemover = clickInfo.event.remove();
+    this.event = clickInfo.event;
     this.patientService.getPatient(this.patientId).subscribe((patientData) => {
       this.patient = {
         id: patientData._id,
@@ -180,15 +183,16 @@ export class DoctorsComponent implements OnInit {
 
   onDeleteVisit() {
     if (confirm(`Czy na pewno chcesz odwołać to wydarzenie? '${this.title}'`)) {
-      this.eventRemover;
+      this.event.remove();
       this.updatingVisitsDoctors = this.doctor.visits.filter((visit) => {
         let startVisit = new Date(visit.start);
         let endVisit = new Date(visit.end);
 
+
         return (
           this.patientId !== visit.id ||
-          this.start !== startVisit ||
-          this.end !== endVisit
+          this.start.toISOString() !== startVisit.toISOString() ||
+          this.end.toISOString() !== endVisit.toISOString()
         );
       });
 
@@ -198,13 +202,30 @@ export class DoctorsComponent implements OnInit {
 
         return (
           this.doctorId !== visit.id ||
-          this.start !== startVisit ||
-          this.end !== endVisit
+          this.start.toISOString() !== startVisit.toISOString() ||
+          this.end.toISOString() !== endVisit.toISOString()
         );
       });
       this.displayVisit = false;
-      console.log(this.updatingVisitsDoctors);
-      console.log(this.updatingVisitsPatients);
+
+      this.doctorsService.updateDoctor(
+        this.doctorId,
+        this.doctor.login,
+        this.doctor.password,
+        this.doctor.name,
+        this.doctor.lastname,
+        this.doctor.city,
+        this.doctor.specjalizations,
+        this.updatingVisitsDoctors
+      );
+      this.patientService.updatePatient(
+        this.patientId,
+        this.patient.login,
+        this.patient.password,
+        this.patient.name,
+        this.patient.lastname,
+        this.updatingVisitsPatients
+      )
     }
   }
   onCheckVisit() {}

@@ -3,9 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DoctorsRoutingModule } from './doctors-routing.module';
-import { DoctorCreatingComponent } from './doctor-creating/doctor-creating.component';
 import { DoctorListComponent } from './doctor-list/doctor-list.component';
-import { DoctorPlanComponent } from './doctor-plan/doctor-plan.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -27,15 +25,10 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  declarations: [
-    DoctorCreatingComponent,
-    DoctorListComponent,
-    DoctorPlanComponent,
-  ],
+  declarations: [DoctorListComponent,],
   imports: [
     CommonModule,
     DoctorsRoutingModule,
-    FormsModule,
     MatToolbarModule,
     MatIconModule,
     BrowserAnimationsModule,
@@ -50,10 +43,9 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
     MatExpansionModule,
     FormsModule,
     HttpClientModule,
-    HttpClientModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    DoctorsRoutingModule,
+
   ],
 
   exports: [MatDatepickerModule, MatButtonModule, MatNativeDateModule],

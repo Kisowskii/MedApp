@@ -1,4 +1,4 @@
-import { Visit } from '../../../admin/doctors/doctors-models/doctors.visit.model';
+import { Visit } from './doctors.visit.model';
 
 export interface Patient {
   id: string;

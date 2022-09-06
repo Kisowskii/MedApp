@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Patient } from '../patients-models/patient.model';
-import { PatientsService } from '../patients.service';
+import { Patient } from '../../../shared/patient.model';
+import { PatientsService } from '../../../shared/patients.service';
 
 @Component({
   selector: 'app-patients-list',

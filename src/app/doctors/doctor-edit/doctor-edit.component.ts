@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Doctor } from '../../admin/doctors/doctors-models/doctor.model';
-import { DoctorsService } from '../../admin/doctors/doctors.service';
+import { Doctor } from '../../shared/doctor.model';
+import { DoctorsService } from '../../shared/doctors.service';
 
 @Component({
   selector: 'app-doctor-edit',
@@ -16,6 +16,7 @@ export class DoctorEditComponent implements OnInit {
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   specjalisations: any = [];
   docConvertSpec: any = [];
+  private mode = 'create';
   private doctorId: string;
   doctor: Doctor;
 
@@ -46,6 +47,8 @@ export class DoctorEditComponent implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
+      if (paramMap.has('doctorId')) {
+        this.mode = 'edit'
       this.doctorId = paramMap.get('doctorId');
       this.doctorsService.getDoctor(this.doctorId).subscribe((doctorData) => {
         if (doctorData.specjalizations) {
@@ -64,6 +67,10 @@ export class DoctorEditComponent implements OnInit {
           visits: doctorData.visits,
         };
       });
+    }else{
+      this.mode = 'create';
+      this.doctorId = null;
+    }
     });
   }
 
@@ -71,17 +78,29 @@ export class DoctorEditComponent implements OnInit {
     if (form.invalid) {
       return;
     }
-
+    if (this.mode === 'edit') {
     this.doctorsService.updateDoctor(
       this.doctorId,
       form.value.login,
       form.value.password,
       form.value.name,
       form.value.lastname,
-      form.value.city.toUpperCase(),
+      form.value.city.toLowerCase(),
       this.specjalisations,
       this.doctor.visits
     );
+  }else{
+    this.doctorsService.addDoctor(
+      form.value.login,
+      form.value.password,
+      form.value.name,
+      form.value.lastname,
+      form.value.city.toLowerCase(),
+      form.value.specjalizations,
+      form.value.visits,
+    );
+  }
+
 
     this.specjalisations = [];
     form.resetForm();

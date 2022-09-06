@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { DoctorsService } from '../doctors/doctors.service';
+import { DoctorsService } from '../../shared/doctors.service';
 
 @Component({
   selector: 'app-patients',

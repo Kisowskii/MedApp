@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PatientsComponent } from '../../patients/patients.component';
 import { CanDeactivateGuard } from '../../can-deactivate.guard';
-import { PatientsCreateComponent } from './patients-create/patients-create.component';
 import { PatientsListComponent } from './patients-list/patients-list.component';
 import { AuthGuard } from '../../auth/auth.guard';
+import { PatientEditComponent } from '../../patients/patient-edit/patient-edit.component';
 
 const patientsRoutes: Routes = [
   {
@@ -12,10 +12,10 @@ const patientsRoutes: Routes = [
     component: PatientsListComponent,
     canActivate: [AuthGuard],
   },
-  { path: 'admin/patients/creating', component: PatientsCreateComponent },
+  { path: 'admin/patients/creating', component: PatientEditComponent },
   {
     path: 'admin/patients/list/edit/:patientId',
-    component: PatientsCreateComponent,
+    component: PatientEditComponent,
     canDeactivate: [CanDeactivateGuard],
     canActivate: [AuthGuard],
   },

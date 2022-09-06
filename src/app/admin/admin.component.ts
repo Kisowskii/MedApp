@@ -7,11 +7,12 @@ export interface Tile {
   text: string;
 }
 @Component({
-  selector: 'app-admin-header',
-  templateUrl: './admin-header.component.html',
-  styleUrls: ['./admin-header.component.css'],
+  selector: 'app-admin',
+  templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css'],
+
 })
-export class AdminHeaderComponent {
+export class AdminComponent {
   constructor() {}
 
   tiles: Tile[] = [
@@ -21,3 +22,4 @@ export class AdminHeaderComponent {
     { text: 'Stwórz Lekarza', cols: 2, rows: 1, color: '#grey' },
   ];
 }
+

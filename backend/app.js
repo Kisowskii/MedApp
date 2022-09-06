@@ -153,10 +153,7 @@ app.post("/api/patients", checkAuth("patientsPaswword"), (req, res, next) => {
   });
 });
 
-app.get(
-  "/api/patients",
-
-  async (req, res, next) => {
+app.get("/api/patients", async (req, res, next) => {
     patients.find().toArray((err, result) => {
       if (err) {
         throw new Error("No file");

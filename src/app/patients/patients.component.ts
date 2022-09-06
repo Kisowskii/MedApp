@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Doctor } from '../admin/doctors/doctors-models/doctor.model';
-import { Visit } from '../admin/doctors/doctors-models/doctors.visit.model';
-import { DoctorsService } from '../admin/doctors/doctors.service';
-import { Patient } from '../admin/patients/patients-models/patient.model';
-import { PatientsService } from '../admin/patients/patients.service';
+import { Doctor } from '../shared/doctor.model';
+import { Visit } from '../shared/doctors.visit.model';
+import { DoctorsService } from '../shared/doctors.service';
+import { Patient } from '../shared/patient.model';
+import { PatientsService } from '../shared/patients.service';
 import { Subscription } from 'rxjs';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
@@ -89,6 +89,7 @@ export class PatientsComponent implements OnInit {
     this.displayDoctors = true;
     this.displayMyVisits = false;
     this.displaySeachingplace = false;
+    this.displayVisits = false;
   }
 
   onDisplayMyVisits() {
@@ -96,6 +97,8 @@ export class PatientsComponent implements OnInit {
     this.displayDoctors = false;
     this.displayMyVisits = true;
     this.displaySeachingplace = false;
+    this.displayVisits = false;
+
     if (this.updatingVisitsPatients.length < 1) {
       this.myVisits = this.patient.visits;
     } else {
@@ -132,7 +135,9 @@ export class PatientsComponent implements OnInit {
             name: patientData.name,
             lastname: patientData.lastname,
             visits: patientData.visits,
+
           };
+           this.updatingVisitsPatients=this.patient.visits;
         });
     });
     this.onDisplayDoctors();
@@ -161,9 +166,7 @@ export class PatientsComponent implements OnInit {
     this.FreeTermins = [];
 
     VisitsTable.forEach((hour) => {
-      let FreeTermin = form.value.date
-        .toString()
-        .replace(form.value.date.toString().slice(16, 24), hour);
+      let FreeTermin = form.value.date.toString().replace(form.value.date.toString().slice(16, 24), hour);
       let FreeDates = new Date(FreeTermin);
       this.FreeTermins.push(FreeDates);
     });
@@ -175,13 +178,8 @@ export class PatientsComponent implements OnInit {
         doc.visits.forEach((visit) => {
           let startTime = new Date(visit.start);
           let endTime = new Date(visit.end);
-          if (
-            startTime.getTime() <= s.getTime() &&
-            endTime.getTime() > s.getTime()
-          ) {
-            if (s.getTime()) {
+          if (startTime.getTime() <= s.getTime() && endTime.getTime() > s.getTime() && s.getTime()) {
               this.busyTermins.push(s.getTime());
-            }
           }
         });
       };
@@ -190,9 +188,10 @@ export class PatientsComponent implements OnInit {
         !doc.visits ||
         doc.visits?.findIndex(
           (visit) => visit.start.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0 ||
-        doc.visits?.findIndex((visit) => visit.end.toString().slice(0, 10) ===this.FreeTermins[0].toISOString().slice(0, 10)) < 0
+        doc.visits?.findIndex((visit) => visit.end.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0
       ) {
         this.FreeTermins.forEach((termin) => {
+          this.busyTermins.push(termin.getTime());
           this.avaibleVisits.push({
             id: doc.id,
             name: doc.name,
@@ -205,19 +204,15 @@ export class PatientsComponent implements OnInit {
         });
       } else {
         doc.visits.forEach((visit) => {
-          const freeDate = new Date(this.FreeTermins[0]);
-
           if (
-            freeDate.toISOString().slice(0, 10) === visit.start.toString().slice(0, 10) ||
-            freeDate.toISOString().slice(0, 10) === visit.end.toString().slice(0, 10)
+            this.FreeTermins[0].toISOString().slice(0, 10) === visit.start.toString().slice(0, 10) ||
+            this.FreeTermins[0].toISOString().slice(0, 10) === visit.end.toString().slice(0, 10)
           ) {
             this.FreeTermins.forEach((termin) => {
               checkTerminisBusy(termin);
 
               if (!this.busyTermins.includes(termin.getTime())) {
-                const correctHour = termin.getTime();
-                this.busyTermins.push(correctHour);
-
+                this.busyTermins.push(termin.getTime());
                 this.avaibleVisits.push({
                   id: doc.id,
                   name: doc.name,
@@ -265,16 +260,16 @@ export class PatientsComponent implements OnInit {
         visits: doctorData.visits,
       };
     });
-    this.patientService.getPatient(this.patientId).subscribe((patientData) => {
+
       this.patient = {
-        id: patientData._id,
-        login: patientData.login,
-        password: patientData.password,
-        name: patientData.name,
-        lastname: patientData.lastname,
-        visits: patientData.visits,
+        id: this.patient.id,
+        login: this.patient.login,
+        password: this.patient.password,
+        name: this.patient.name,
+        lastname: this.patient.lastname,
+        visits: this.updatingVisitsPatients,
       };
-    });
+
     this.displayVerify = true;
   }
 
@@ -337,6 +332,7 @@ export class PatientsComponent implements OnInit {
       this.updatingVisitsDoctors
     );
     this.displayVerify = false;
+    this.displayVisits = false;
   }
   OnCancel() {
     this.displayVerify = false;
@@ -352,7 +348,7 @@ export class PatientsComponent implements OnInit {
     );
   }
 
-  onRemoveVisit(title: any, start: any, end: any, id: string) {
+  onRemoveVisit( id: string) {
     this.doctorService.getDoctor(id).subscribe((doctorData) => {
       this.doctor = {
         id: doctorData._id,
@@ -418,5 +414,6 @@ export class PatientsComponent implements OnInit {
       this.updatingVisitsDoctors
     );
     this.displayDelete = false;
+    this.onDisplayMyVisits()
   }
 }

@@ -4,8 +4,8 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { Doctor } from './doctors-models/doctor.model';
-import { Visit } from './doctors-models/doctors.visit.model';
+import { Doctor } from './doctor.model';
+import { Visit } from './doctors.visit.model';
 
 @Injectable({ providedIn: 'root' })
 export class DoctorsService {

@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { Doctor } from '../admin/doctors/doctors-models/doctor.model';
-import { Patient } from '../admin/patients/patients-models/patient.model';
+import { Doctor } from '../shared/doctor.model';
+import { Patient } from '../shared/patient.model';
 import { User } from './user.model';
 import { Login } from './login.model';
 import { Router } from '@angular/router';

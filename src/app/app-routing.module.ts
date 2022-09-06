@@ -2,10 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './auth/auth.guard';
 import { SelectivePreloadingStrategyService } from './selective-preloading-strategy.service';
+import { SharedModule } from './shared/shared/shared.module';
 
 import { StartingPageComponent } from './starting-page/starting-page.component';
 
 const appRoutes: Routes = [
+
   { path: '', component: StartingPageComponent },
   {
     path: 'admins',
@@ -28,6 +30,7 @@ const appRoutes: Routes = [
     canLoad: [AuthGuard],
     canActivate: [AuthGuard],
   },
+
 ];
 
 @NgModule({

@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { DoctorEditComponent } from '../../doctors/doctor-edit/doctor-edit.component';
 import { AuthGuard } from '../../auth/auth.guard';
 import { CanDeactivateGuard } from '../../can-deactivate.guard';
-import { DoctorCreatingComponent } from './doctor-creating/doctor-creating.component';
 
 import { DoctorListComponent } from './doctor-list/doctor-list.component';
-import { DoctorPlanComponent } from './doctor-plan/doctor-plan.component';
+import { DoctorsComponent } from '../../doctors/doctors.component';
 
 const doctorsRoutes: Routes = [
   {
@@ -15,18 +15,18 @@ const doctorsRoutes: Routes = [
   },
   {
     path: 'admin/doctors/creating',
-    component: DoctorCreatingComponent,
+    component: DoctorEditComponent,
     canActivate: [AuthGuard],
   },
   {
     path: 'admin/doctors/list/edit/:doctorId',
-    component: DoctorCreatingComponent,
+    component: DoctorEditComponent,
     canActivate: [AuthGuard],
     canDeactivate: [CanDeactivateGuard],
   },
   {
     path: 'admin/doctors/list/plan/:doctorId',
-    component: DoctorPlanComponent,
+    component: DoctorsComponent,
     canActivate: [AuthGuard],
   },
 ];
