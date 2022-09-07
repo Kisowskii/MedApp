@@ -31,8 +31,8 @@ defineFullCalendarElement();
 export class DoctorsComponent implements OnInit {
   @ViewChild('calendar') calendarRef: ElementRef<FullCalendarElement>;
   displayVisit = false;
-  updatingVisitsPatients = [];
-  updatingVisitsDoctors = [];
+  updatingVisitsPatients: Visit[] = [];
+  updatingVisitsDoctors: Visit[] = [];
   calendarVisible = true;
   private doctorId: string;
   patientId: string;

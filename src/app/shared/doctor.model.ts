@@ -7,6 +7,6 @@ export interface Doctor {
   name?: string;
   lastname?: string;
   city?: string;
-  specjalizations?: [];
+  specjalizations?: string[];
   visits?: Visit[];
 }

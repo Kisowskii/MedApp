@@ -99,7 +99,7 @@ export class DoctorsService {
     name: string,
     lastname: string,
     city: string,
-    specjalizations: [],
+    specjalizations: string[],
     visits: Visit[]
   ) {
     const doctor: Doctor = {

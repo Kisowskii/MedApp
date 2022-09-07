@@ -63,7 +63,7 @@ export class PatientsComponent implements OnInit {
   updatingVisitsDoctors = [];
   updatingVisitsPatients = [];
   filteredVisits = [];
-  avaibleVisits = [];
+
   FreeTermins = [];
   busyTermins = [];
   paginationVisits = [];
@@ -162,9 +162,8 @@ export class PatientsComponent implements OnInit {
       this.updatingVisitsPatients
     );
     this.filteredVisits = [];
-    this.avaibleVisits = [];
     this.FreeTermins = [];
-
+this.paginationVisits=[]
     VisitsTable.forEach((hour) => {
       let FreeTermin = form.value.date.toString().replace(form.value.date.toString().slice(16, 24), hour);
       let FreeDates = new Date(FreeTermin);
@@ -172,79 +171,68 @@ export class PatientsComponent implements OnInit {
     });
 
     this.doctors = this.doctorService.getArrayDoctors().filter((doc) => {
+      return (
+        (doc.lastname === form.value.lastname ||
+          form.value.lastname === '') &&
+        (doc.specjalizations.includes(this.specSelect) ||
+          this.specSelect === undefined) &&
+        (this.citiesSelect === undefined ||
+          this.citiesSelect.includes(doc.city) ||
+          this.citiesSelect.length === 0)
+      )});
+
       this.busyTermins = [];
-
-      const checkTerminisBusy = (s) => {
-        doc.visits.forEach((visit) => {
-          let startTime = new Date(visit.start);
-          let endTime = new Date(visit.end);
-          if (startTime.getTime() <= s.getTime() && endTime.getTime() > s.getTime() && s.getTime()) {
-              this.busyTermins.push(s.getTime());
-          }
-        });
-      };
-
-      if (
-        !doc.visits ||
-        doc.visits?.findIndex(
-          (visit) => visit.start.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0 ||
-        doc.visits?.findIndex((visit) => visit.end.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0
-      ) {
-        this.FreeTermins.forEach((termin) => {
-          this.busyTermins.push(termin.getTime());
-          this.avaibleVisits.push({
-            id: doc.id,
-            name: doc.name,
-            lastname: doc.lastname,
-            specjalizations: doc.specjalizations,
-            visit: termin.toString(),
-            city: doc.city,
-            displayVisit: `${termin.toLocaleDateString()}  godzina: ${termin.toLocaleTimeString()}`,
+      this.doctors.forEach(doc=>{
+        const checkTerminisBusy = (s) => {
+          doc.visits.forEach((visit) => {
+            let startTime = new Date(visit.start);
+            let endTime = new Date(visit.end);
+            if (startTime.getTime() <= s.getTime() && endTime.getTime() > s.getTime() && s.getTime()) {
+                this.busyTermins.push(s.getTime());
+            }
           });
-        });
-      } else {
-        doc.visits.forEach((visit) => {
-          if (
-            this.FreeTermins[0].toISOString().slice(0, 10) === visit.start.toString().slice(0, 10) ||
-            this.FreeTermins[0].toISOString().slice(0, 10) === visit.end.toString().slice(0, 10)
-          ) {
-            this.FreeTermins.forEach((termin) => {
-              checkTerminisBusy(termin);
+        };
 
-              if (!this.busyTermins.includes(termin.getTime())) {
-                this.busyTermins.push(termin.getTime());
-                this.avaibleVisits.push({
-                  id: doc.id,
-                  name: doc.name,
-                  lastname: doc.lastname,
-                  specjalizations: doc.specjalizations,
-                  visit: termin.toString(),
-                  city: doc.city,
-                  displayVisit: `${termin.toLocaleDateString()}  godzina:${termin.toLocaleTimeString()}`,
-                });
-              }
+        if (
+          !doc.visits ||
+          doc.visits?.findIndex(
+            (visit) => visit.start.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0 ||
+          doc.visits?.findIndex((visit) => visit.end.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0
+        ) {
+          this.FreeTermins.forEach((termin) => {
+            this.busyTermins.push(termin.getTime());
+            this.filteredVisits.push({
+              id: doc.id,
+              name: doc.name,
+              lastname: doc.lastname,
+              specjalizations: doc.specjalizations,
+              visit: termin.toString(),
+              city: doc.city,
+              displayVisit: `${termin.toLocaleDateString()}  godzina: ${termin.toLocaleTimeString()}`,
             });
-          }
-        });
-      }
-      this.displayVisits = true;
+          });
+        } else {
+              this.FreeTermins.forEach((termin) => {
+                checkTerminisBusy(termin);
+                if (!this.busyTermins.includes(termin.getTime())) {
+                  this.busyTermins.push(termin.getTime());
+                  this.filteredVisits.push({
+                    id: doc.id,
+                    name: doc.name,
+                    lastname: doc.lastname,
+                    specjalizations: doc.specjalizations,
+                    visit: termin.toString(),
+                    city: doc.city,
+                    displayVisit: `${termin.toLocaleDateString()}  godzina:${termin.toLocaleTimeString()}`,
+                  });
+                }
+              });
 
-      this.filteredVisits = this.avaibleVisits
-        .filter((visits) => {
-          return (
-            (visits.lastname === form.value.lastname ||
-              form.value.lastname === '') &&
-            (visits.specjalizations.includes(this.specSelect) ||
-              this.specSelect === undefined) &&
-            (this.citiesSelect === undefined ||
-              this.citiesSelect.includes(visits.city) ||
-              this.citiesSelect.length === 0)
-          );
-        })
-        .sort((a, b) => a.visit.localeCompare(b.visit));
-      this.paginationVisits = this.filteredVisits.slice(0, this.postsPerPage);
-      return this.paginationVisits;
-    });
+        }
+        this.displayVisits = true;
+        this.filteredVisits = this.filteredVisits.sort((a, b) => a.visit.localeCompare(b.visit));
+        this.paginationVisits = this.filteredVisits.slice(0, this.postsPerPage);
+      })
   }
 
   onAddVisit(id: string, visit: string) {
