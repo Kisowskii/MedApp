@@ -8,9 +8,7 @@
       <p>{{ doctor.specjalizations }}</p>
       <p>{{ doctor.city }}</p>
       <mat-action-row>
-        <a mat-button color="accent" [routerLink]="['edit', doctor.id]"
-          >EDYTUJ</a
-        >
+
         <button mat-button color="accent" (click)="onDelete(doctor.id)">
           USUŃ
         </button>

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { DoctorsService } from '../../shared/doctors.service';
 
@@ -7,7 +7,7 @@ import { DoctorsService } from '../../shared/doctors.service';
   templateUrl: './patients.component.html',
   styleUrls: ['./patients.component.css'],
 })
-export class PatientsComponent implements OnInit {
+export class PatientsComponent  {
   constructor(public doctorService: DoctorsService) {}
-  ngOnInit() {}
+
 }

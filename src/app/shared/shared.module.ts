@@ -2,12 +2,9 @@ import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../header/header.component';
 import { StartingPageComponent } from '../starting-page/starting-page.component';
-import { DoctorsComponent } from '../doctors/doctors.component';
-import { PatientsComponent } from '../patients/patients.component';
+import { DoctorsComponent } from './doctors-visit/doctors.component';
+import { PatientsComponent } from './patients-visit/patients.component';
 import { AdminComponent } from '../admin/admin.component';
-import { PatientsModule } from '../patients/patients.module';
-import { DoctorsModule } from '../doctors/doctors.module';
-import { AdminModule } from '../admin/admin.module';
 import { Router, RouterModule } from '@angular/router';
 import { AuthModule } from '../auth/auth.module';
 import { MatSelectModule } from '@angular/material/select';
@@ -29,16 +26,15 @@ import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { BrowserModule } from '@angular/platform-browser';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { PatientsModule } from '../admin/patients/patients.module';
+import { DoctorsModule } from '../admin/doctors/doctors.module';
 
 
 
 @NgModule({
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [HeaderComponent,StartingPageComponent, DoctorsComponent,
-    PatientsComponent,AdminComponent,
-
-
-  ],
+    PatientsComponent,AdminComponent,],
   imports: [
 CommonModule,
     BrowserModule,
@@ -63,7 +59,8 @@ CommonModule,
     MatNativeDateModule,
     MatPaginatorModule,
     AuthModule,
-
+    PatientsModule,
+    DoctorsModule,
   ],
 
   exports: [MatButtonModule, MatNativeDateModule, HeaderComponent,StartingPageComponent,  DoctorsComponent,PatientsComponent,AdminComponent],

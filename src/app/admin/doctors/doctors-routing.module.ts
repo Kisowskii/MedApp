@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { DoctorEditComponent } from '../../shared/doctor-edit/doctor-edit.component';
+import { DoctorEditComponent } from '../../shared/doctors-visit/doctor-edit/doctor-edit.component';
 import { AuthGuard } from '../../auth/auth.guard';
 import { CanDeactivateGuard } from '../../can-deactivate.guard';
 
 import { DoctorListComponent } from './doctor-list/doctor-list.component';
-import { DoctorsComponent } from '../../doctors/doctors.component';
+import { DoctorsComponent } from '../../shared/doctors-visit/doctors.component';
 
 const doctorsRoutes: Routes = [
   {
@@ -19,7 +19,7 @@ const doctorsRoutes: Routes = [
     canActivate: [AuthGuard],
   },
   {
-    path: 'admin/doctors/list/edit/:doctorId',
+    path: 'admin/doctors/list/plan/:doctorId/edit',
     component: DoctorEditComponent,
     canActivate: [AuthGuard],
     canDeactivate: [CanDeactivateGuard],

@@ -3,8 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Doctor } from '../doctor.model';
-import { DoctorsService } from '../doctors.service';
+import { Doctor } from '../../doctor.model';
+import { DoctorsService } from '../../doctors.service';
 
 @Component({
   selector: 'app-doctor-edit',

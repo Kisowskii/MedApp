@@ -14,12 +14,12 @@ import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import allLocales from '@fullcalendar/core/locales-all';
 import { INITIAL_EVENTS, createEventId } from './event-utils';
-import { Doctor } from '../shared/doctor.model';
-import { Visit } from '../shared/doctors.visit.model';
-import { DoctorsService } from '../shared/doctors.service';
-import { AuthService } from '../auth/auth.service';
-import { PatientsService } from '../shared/patients.service';
-import { Patient } from '../shared/patient.model';
+import { Doctor } from '../doctor.model';
+import { Visit } from '../visit.model';
+import { DoctorsService } from '../doctors.service';
+import { AuthService } from '../../auth/auth.service';
+import { PatientsService } from '../patients.service';
+import { Patient } from '../patient.model';
 
 defineFullCalendarElement();
 
@@ -105,13 +105,13 @@ export class DoctorsComponent implements OnInit {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
-    this.updatingVisitsDoctors = [];
-    this.updatingVisitsPatients = [];
+
     this.patientId = clickInfo.event._def.publicId;
     this.start = new Date(clickInfo.event.start);
     this.end = new Date(clickInfo.event.end);
     this.title = clickInfo.event.title;
     this.event = clickInfo.event;
+    if(this.patientId.length>10){
     this.patientService.getPatient(this.patientId).subscribe((patientData) => {
       this.patient = {
         id: patientData._id,
@@ -122,6 +122,7 @@ export class DoctorsComponent implements OnInit {
         visits: patientData.visits,
       };
     });
+  }
 
     this.displayVisit = true;
   }
@@ -135,9 +136,7 @@ export class DoctorsComponent implements OnInit {
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       this.doctorId = paramMap.get('doctorId');
-      const mat = this.doctorsService
-        .getDoctor(this.doctorId)
-        .subscribe((doctorData) => {
+       this.doctorsService.getDoctor(this.doctorId).subscribe((doctorData) => {
           this.doctor = {
             id: doctorData._id,
             login: doctorData.login,
@@ -153,6 +152,8 @@ export class DoctorsComponent implements OnInit {
           this.doctor.visits?.forEach((x) =>
             this.calendarRef.nativeElement.getApi().addEvent(x)
           );
+
+          this.updatingVisitsDoctors = this.doctor.visits;
         });
     });
   }
@@ -184,7 +185,8 @@ export class DoctorsComponent implements OnInit {
   onDeleteVisit() {
     if (confirm(`Czy na pewno chcesz odwołać to wydarzenie? '${this.title}'`)) {
       this.event.remove();
-      this.updatingVisitsDoctors = this.doctor.visits.filter((visit) => {
+
+      this.updatingVisitsDoctors = this.updatingVisitsDoctors.filter((visit) => {
         let startVisit = new Date(visit.start);
         let endVisit = new Date(visit.end);
 
@@ -195,7 +197,7 @@ export class DoctorsComponent implements OnInit {
           this.end.toISOString() !== endVisit.toISOString()
         );
       });
-
+      if(this.patientId.length>10){
       this.updatingVisitsPatients = this.patient.visits.filter((visit) => {
         let startVisit = new Date(visit.start);
         let endVisit = new Date(visit.end);
@@ -206,6 +208,7 @@ export class DoctorsComponent implements OnInit {
           this.end.toISOString() !== endVisit.toISOString()
         );
       });
+    }
       this.displayVisit = false;
 
       this.doctorsService.updateDoctor(
@@ -228,5 +231,5 @@ export class DoctorsComponent implements OnInit {
       )
     }
   }
-  onCheckVisit() {}
+
 }

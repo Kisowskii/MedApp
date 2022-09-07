@@ -16,8 +16,7 @@ import { SharedModule } from './shared/shared.module';
   declarations: [AppComponent],
   imports: [
     AppRoutingModule,
-    PatientsModule,
-    DoctorsModule,
+
     SharedModule,
   ],
   bootstrap: [AppComponent],

@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Doctor } from './doctor.model';
-import { Visit } from './doctors.visit.model';
+import { Visit } from './visit.model';
 
 @Injectable({ providedIn: 'root' })
 export class DoctorsService {

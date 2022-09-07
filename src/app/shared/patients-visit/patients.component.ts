@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, NgForm } from '@angular/forms';
+import { FormControl,NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { Doctor } from '../shared/doctor.model';
-import { Visit } from '../shared/doctors.visit.model';
-import { DoctorsService } from '../shared/doctors.service';
-import { Patient } from '../shared/patient.model';
-import { PatientsService } from '../shared/patients.service';
+import { Doctor } from '../doctor.model';
+import { Visit } from '../visit.model';
+import { DoctorsService } from '../doctors.service';
+import { Patient } from '../patient.model';
+import { PatientsService } from '../patients.service';
 import { Subscription } from 'rxjs';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 

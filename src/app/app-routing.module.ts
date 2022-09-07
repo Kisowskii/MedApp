@@ -19,14 +19,14 @@ const appRoutes: Routes = [
   {
     path: 'patient',
     loadChildren: () =>
-      import('./patients/patients.module').then((m) => m.PatientsModule),
+      import('./shared/patients-visit/patients.module').then((m) => m.PatientsModule),
     canLoad: [AuthGuard],
     canActivate: [AuthGuard],
   },
   {
     path: 'doctors',
     loadChildren: () =>
-      import('./doctors/doctors.module').then((m) => m.DoctorsModule),
+      import('./shared/doctors-visit/doctors.module').then((m) => m.DoctorsModule),
     canLoad: [AuthGuard],
     canActivate: [AuthGuard],
   },

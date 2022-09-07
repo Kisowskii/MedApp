@@ -20,7 +20,7 @@ import {
   MAT_DATE_LOCALE,
 } from '@angular/material/core';
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { PatientEditComponent } from '../shared/patient-edit/patient-edit.component';
+import { PatientEditComponent } from './patient-edit/patient-edit.component';
 import { MatSelectModule } from '@angular/material/select';
 
 @NgModule({
