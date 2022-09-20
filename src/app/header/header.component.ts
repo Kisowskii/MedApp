@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
@@ -10,14 +9,14 @@ import { AuthService } from '../auth/auth.service';
   styleUrls: ['./header.component.css'],
 })
 export class HeaderComponent implements OnInit, OnDestroy {
-  path: any;
+  path: string;
 
   onRefresh() {
     this.path = this.authService.getMedPath();
     return this.path;
   }
 
-  constructor(public authService: AuthService, private router: Router) {}
+  constructor(public authService: AuthService) {}
   userIsAuthenticated = false;
   private authListenerSubs: Subscription;
   ngOnInit(): void {

@@ -22,7 +22,7 @@ export class AuthService {
   private adminsUpdated = new Subject<User[]>();
   private isAuthenticated = false;
   private authStatusListener = new Subject<boolean>();
-  private medPath: any = '/';
+  private medPath: string = '/';
   constructor(private http: HttpClient, private router: Router) {}
   // store the URL so we can redirect after logging in
   redirectUrl: string | null = null;

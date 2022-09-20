@@ -1,19 +1,12 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import {
-  CalendarOptions,
-  DateSelectArg,
-  EventClickArg,
-  EventApi,
-  FullCalendarElement,
-  defineFullCalendarElement,
-} from '@fullcalendar/web-component';
+import {CalendarOptions,DateSelectArg,EventClickArg,EventApi,FullCalendarElement,defineFullCalendarElement} from '@fullcalendar/web-component';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import interactionPlugin from '@fullcalendar/interaction';
 import allLocales from '@fullcalendar/core/locales-all';
-import { INITIAL_EVENTS, createEventId } from './event-utils';
+
 import { Doctor } from '../doctor.model';
 import { Visit } from '../visit.model';
 import { DoctorsService } from '../doctors.service';
@@ -26,7 +19,6 @@ defineFullCalendarElement();
 @Component({
   selector: 'app-doctors',
   templateUrl: './doctors.component.html',
-  styleUrls: ['./doctors.component.css'],
 })
 export class DoctorsComponent implements OnInit {
   @ViewChild('calendar') calendarRef: ElementRef<FullCalendarElement>;
@@ -54,7 +46,7 @@ export class DoctorsComponent implements OnInit {
     slotMaxTime: '16:00:00',
     weekends: false,
     initialView: 'timeGridWeek',
-    initialEvents: INITIAL_EVENTS,
+
     locales: allLocales,
     locale: 'pl',
     slotDuration: '00:30',
@@ -78,21 +70,18 @@ export class DoctorsComponent implements OnInit {
   ) {}
   handleDateSelect(selectInfo: DateSelectArg) {
     const title = prompt('Dodaj nazwisko pacjenta i przyczyne wizyty');
-
     const calendarApi = selectInfo.view.calendar;
-
-    calendarApi.unselect(); // clear date selection
+    calendarApi.unselect();
 
     if (title) {
       const visit: Visit = {
-        id: createEventId(),
+        id: this.doctorId,
         end: selectInfo.end,
         start: selectInfo.start,
         title: title,
       };
-
-      const data = calendarApi.addEvent({
-        id: createEventId(),
+      calendarApi.addEvent({
+        id: this.doctorId,
         title,
         start: selectInfo.startStr,
         end: selectInfo.endStr,
@@ -105,7 +94,6 @@ export class DoctorsComponent implements OnInit {
   }
 
   handleEventClick(clickInfo: EventClickArg) {
-
     this.patientId = clickInfo.event._def.publicId;
     this.start = new Date(clickInfo.event.start);
     this.end = new Date(clickInfo.event.end);
@@ -123,7 +111,6 @@ export class DoctorsComponent implements OnInit {
       };
     });
   }
-
     this.displayVisit = true;
   }
 
@@ -147,23 +134,20 @@ export class DoctorsComponent implements OnInit {
             specjalizations: doctorData.specjalizations,
             visits: doctorData.visits,
           };
-
           this.calendarRef.nativeElement.getApi().removeAllEvents();
           this.doctor.visits?.forEach((x) =>
             this.calendarRef.nativeElement.getApi().addEvent(x)
           );
-
           this.updatingVisitsDoctors = this.doctor.visits;
         });
     });
   }
 
   onSaveVisits() {
-    let updatingVisits;
     if (this.doctor.visits) {
-      updatingVisits = this.doctor.visits?.concat([...this.visits]);
+      this.doctor.visits = this.doctor.visits?.concat([...this.visits]);
     } else {
-      updatingVisits = [...this.visits];
+      this.doctor.visits = [...this.visits];
     }
     this.doctorsService.updateDoctor(
       this.doctorId,
@@ -173,7 +157,7 @@ export class DoctorsComponent implements OnInit {
       this.doctor.lastname,
       this.doctor.city,
       this.doctor.specjalizations,
-      updatingVisits
+      this.doctor.visits
     );
   }
 
@@ -189,28 +173,16 @@ export class DoctorsComponent implements OnInit {
       this.updatingVisitsDoctors = this.updatingVisitsDoctors.filter((visit) => {
         let startVisit = new Date(visit.start);
         let endVisit = new Date(visit.end);
-
-
-        return (
-          this.patientId !== visit.id ||
-          this.start.toISOString() !== startVisit.toISOString() ||
-          this.end.toISOString() !== endVisit.toISOString()
-        );
+        return (this.patientId !== visit.id || this.start.toISOString() !== startVisit.toISOString() || this.end.toISOString() !== endVisit.toISOString());
       });
       if(this.patientId.length>10){
       this.updatingVisitsPatients = this.patient.visits.filter((visit) => {
         let startVisit = new Date(visit.start);
         let endVisit = new Date(visit.end);
-
-        return (
-          this.doctorId !== visit.id ||
-          this.start.toISOString() !== startVisit.toISOString() ||
-          this.end.toISOString() !== endVisit.toISOString()
-        );
+        return (this.doctorId !== visit.id || this.start.toISOString() !== startVisit.toISOString() || this.end.toISOString() !== endVisit.toISOString());
       });
     }
       this.displayVisit = false;
-
       this.doctorsService.updateDoctor(
         this.doctorId,
         this.doctor.login,

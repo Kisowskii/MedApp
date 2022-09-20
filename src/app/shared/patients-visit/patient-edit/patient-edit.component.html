@@ -1,14 +1,14 @@
 <div class="creating-container">
   <mat-card color="accent">
     <form (submit)="onSavePatient(patientForm)" #patientForm="ngForm">
-      <h1>Tworzenie nowego konta</h1>
+      <h1>Edycja konta</h1>
 
       <mat-form-field>
         <input
           matInput
           type="text"
           name="login"
-          [ngModel]="patient?.login"
+          [ngModel]="patient.login"
           required
           minlength="3"
           placeholder="Twój login"
@@ -20,7 +20,7 @@
           matInput
           type="text"
           name="password"
-          [ngModel]="patient?.password"
+          [ngModel]="patient.password"
           required
           minlength="3"
           placeholder="Twoje hasło"
@@ -32,7 +32,7 @@
           matInput
           type="text"
           name="name"
-          [ngModel]="patient?.name"
+          [ngModel]="patient.name"
           required
           minlength="3"
           placeholder="Twoje imie"
@@ -46,7 +46,7 @@
           type="text"
           name="lastname"
           required
-          [ngModel]="patient?.lastname"
+          [ngModel]="patient.lastname"
           minlength="3"
           placeholder="Twoje nazwisko"
           #lastname="ngModel"

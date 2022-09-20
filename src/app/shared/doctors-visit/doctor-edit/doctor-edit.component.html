@@ -1,14 +1,14 @@
 <div class="creating-container">
   <mat-card color="accent">
     <form (submit)="onSaveDoctor(doctorForm)" #doctorForm="ngForm">
-      <h1>Tworzenie nowego konta</h1>
+      <h1>Edycja konta</h1>
 
       <mat-form-field>
         <input
           matInput
           type="text"
           name="login"
-          [ngModel]="doctor?.login"
+          [ngModel]="doctor.login"
           required
           minlength="3"
           placeholder="Twój login"
@@ -20,7 +20,7 @@
           matInput
           type="text"
           name="password"
-          [ngModel]="doctor?.password"
+          [ngModel]="doctor.password"
           required
           minlength="3"
           placeholder="Twoje hasło"
@@ -32,7 +32,7 @@
           matInput
           type="text"
           name="name"
-          [ngModel]="doctor?.name"
+          [ngModel]="doctor.name"
           required
           minlength="3"
           placeholder="Twoje imie"
@@ -46,7 +46,7 @@
           type="text"
           name="lastname"
           required
-          [ngModel]="doctor?.lastname"
+          [ngModel]="doctor.lastname"
           minlength="3"
           placeholder="Twoje nazwisko"
           #lastname="ngModel"
@@ -58,7 +58,7 @@
           matInput
           type="text"
           name="city"
-          [ngModel]="doctor?.city"
+          [ngModel]="doctor.city"
           required
           minlength="3"
           placeholder="Twoje miasto"
@@ -82,7 +82,7 @@
             name="specjalizations"
             placeholder="Nowa specjalizacja..."
             required
-            [ngModel]="doctor?.specjalizations"
+            [ngModel]="doctor.specjalizations"
             [matChipInputFor]="specjalizations"
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
             [matChipInputAddOnBlur]="addOnBlur"

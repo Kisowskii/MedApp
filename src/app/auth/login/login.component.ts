@@ -9,7 +9,6 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  isLoading = false;
   message: string;
 
   constructor(public authService: AuthService, public router: Router) {}
@@ -18,7 +17,6 @@ export class LoginComponent {
     if (form.invalid) {
       return;
     }
-    this.isLoading = true;
     this.authService.login(form.value.login, form.value.password);
   }
 }

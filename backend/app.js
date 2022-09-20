@@ -67,7 +67,7 @@ app.post("/api/users/admins/login", login(admins));
 app.post("/api/users/patients/login", login(patients));
 app.post("/api/users/doctors/login", login(doctors));
 ///////////////////////////////////Doctors//////////////////////////////
-app.post("/api/doctors", checkAuth("doctorsPaswword"), (req, res, next) => {
+app.post("/api/doctors", checkAuth("doctorsPaswword"), (req, res) => {
   const doc = {
     login: req.body.login,
     password: req.body.password,
@@ -76,7 +76,7 @@ app.post("/api/doctors", checkAuth("doctorsPaswword"), (req, res, next) => {
     city: req.body.city,
     specjalizations: req.body.specjalizations,
   };
-  doctors.insertOne(doc, (err, docs) => {
+  doctors.insertOne(doc, err => {
     if (err) {
       throw new Error("No file");
     }
@@ -84,7 +84,7 @@ app.post("/api/doctors", checkAuth("doctorsPaswword"), (req, res, next) => {
   });
 });
 
-app.get("/api/doctors", async (req, res, next) => {
+app.get("/api/doctors", async (req, res) => {
   doctors.find().toArray((err, result) => {
     if (err) {
       throw new Error("No file");
@@ -93,7 +93,7 @@ app.get("/api/doctors", async (req, res, next) => {
   });
 });
 
-app.get("/api/doctors/:id", async (req, res, next) => {
+app.get("/api/doctors/:id", async (req, res) => {
   doctors.findOne({ _id: ObjectId(req.params.id) }).then((doctor) => {
     if (doctor) {
       res.status(200).json(doctor);
@@ -103,7 +103,7 @@ app.get("/api/doctors/:id", async (req, res, next) => {
   });
 });
 
-app.put("/api/doctors/:id", (req, res, next) => {
+app.put("/api/doctors/:id", (req, res) => {
   doctors
     .updateOne(
       { _id: ObjectId(req.params.id) },
@@ -125,16 +125,14 @@ app.put("/api/doctors/:id", (req, res, next) => {
 });
 
 app.delete(
-  "/api/doctors/:id",
-  checkAuth("doctorsPaswword"),
-  (req, res, next) => {
+  "/api/doctors/:id",(req, res) => {
     doctors.deleteOne({ _id: ObjectId(req.params.id) }).then((result) => {
       res.status(200).json({doctors: result,});
     });
   }
 );
 ////////////////////////Patients/////////////////
-app.post("/api/patients", checkAuth("patientsPaswword"), (req, res, next) => {
+app.post("/api/patients", checkAuth("patientsPaswword"), (req, res) => {
   const doc = {
     login: req.body.login,
     password: req.body.password,
@@ -142,7 +140,7 @@ app.post("/api/patients", checkAuth("patientsPaswword"), (req, res, next) => {
     lastname: req.body.lastname,
     visit: req.body.visits,
   };
-  patients.insertOne(doc, (err, docs) => {
+  patients.insertOne(doc, err => {
     if (err) {
       throw new Error("No file");
     }
@@ -150,7 +148,7 @@ app.post("/api/patients", checkAuth("patientsPaswword"), (req, res, next) => {
   });
 });
 
-app.get("/api/patients", async (req, res, next) => {
+app.get("/api/patients", async (req, res) => {
     patients.find().toArray((err, result) => {
       if (err) {
         throw new Error("No file");
@@ -160,7 +158,7 @@ app.get("/api/patients", async (req, res, next) => {
   }
 );
 
-app.get("/api/patients/:id", async (req, res, next) => {
+app.get("/api/patients/:id", async (req, res) => {
   patients.findOne({ _id: ObjectId(req.params.id) }).then((patient) => {
     if (patient) {
       res.status(200).json(patient);
@@ -170,7 +168,7 @@ app.get("/api/patients/:id", async (req, res, next) => {
   });
 });
 
-app.put("/api/patients/:id", (req, res, next) => {
+app.put("/api/patients/:id", (req, res) => {
   patients
     .updateOne(
       { _id: ObjectId(req.params.id) },
@@ -189,10 +187,7 @@ app.put("/api/patients/:id", (req, res, next) => {
     });
 });
 
-app.delete(
-  "/api/patients/:id",
-  checkAuth("patientsPaswword"),
-  (req, res, next) => {
+app.delete("/api/patients/:id", checkAuth("patientsPaswword"), (req, res) => {
     patients.deleteOne({ _id: ObjectId(req.params.id) }).then(() => {
       res.status(200).json({patients: result,});
     });

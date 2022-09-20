@@ -1,17 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl,NgForm } from '@angular/forms';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { Subscription } from 'rxjs';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { filter,toarray,pipe,flatmap,distinct,map } from "powerseq";
+
 import { Doctor } from '../doctor.model';
 import { Visit } from '../visit.model';
 import { DoctorsService } from '../doctors.service';
 import { Patient } from '../patient.model';
 import { PatientsService } from '../patients.service';
-import { Subscription } from 'rxjs';
-import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
-const today = new Date();
-const month = today.getMonth();
-const year = today.getFullYear();
 
 const VisitsTable = [
   '07:00:00',
@@ -45,13 +44,10 @@ export class PatientsComponent implements OnInit {
   citiesSelect: string[];
   postsPerPage = 10;
   currentPage = 1;
-  today = new Date();
   doctors: Doctor[] = [];
   doctor: Doctor;
   patient: Patient;
   visits: Visit[] = [];
-  visitsForPat: Visit[] = [];
-  visitsForDoc: Visit[] = [];
   private patientId: string;
   displayDoctors = false;
   displayVisits = false;
@@ -63,7 +59,6 @@ export class PatientsComponent implements OnInit {
   updatingVisitsDoctors = [];
   updatingVisitsPatients = [];
   filteredVisits = [];
-
   FreeTermins = [];
   busyTermins = [];
   paginationVisits = [];
@@ -98,9 +93,8 @@ export class PatientsComponent implements OnInit {
     this.displayMyVisits = true;
     this.displaySeachingplace = false;
     this.displayVisits = false;
-
     if (this.updatingVisitsPatients.length < 1) {
-      this.myVisits = this.patient.visits;
+      this.myVisits = this.patient?.visits;
     } else {
       this.myVisits = this.updatingVisitsPatients;
     }
@@ -112,14 +106,13 @@ export class PatientsComponent implements OnInit {
     this.displaySeachingplace = true;
     this.displayDoctors = false;
     this.displayMyVisits = false;
-    this.doctors.forEach((doc) => {
-      if (doc.specjalizations) {this.specjalizations.push(doc.specjalizations);}
-      if (doc.city) {this.cities.push(doc.city);}
-    });
-    this.specjalizations = this.specjalizations
-      .flat()
-      .filter((el, i, a) => i === a.indexOf(el));
-    this.cities = this.cities.filter((el, i, a) => i === a.indexOf(el));
+    this.displaySearching=false;
+    for (const specializations of pipe(flatmap(this.doctors,doc=>doc.specjalizations),distinct() ,toarray())){
+      this.specjalizations.push(specializations)
+    };
+    for (const cities of pipe(map(this.doctors,(doc=>doc.city)),distinct() ,toarray())){
+      this.cities.push(cities)
+    };
   }
 
   ngOnInit(): void {
@@ -135,16 +128,17 @@ export class PatientsComponent implements OnInit {
             name: patientData.name,
             lastname: patientData.lastname,
             visits: patientData.visits,
-
           };
            this.updatingVisitsPatients=this.patient.visits;
         });
     });
     this.onDisplayDoctors();
   }
+
   ngOnDestroy() {
     this.doctorsSub.unsubscribe();
   }
+
   onCheckDate(form: NgForm) {
     if (form.value.date) {
       this.displaySearching = true;
@@ -163,12 +157,10 @@ export class PatientsComponent implements OnInit {
     );
     this.filteredVisits = [];
     this.FreeTermins = [];
-this.paginationVisits=[]
-    VisitsTable.forEach((hour) => {
-      let FreeTermin = form.value.date.toString().replace(form.value.date.toString().slice(16, 24), hour);
-      let FreeDates = new Date(FreeTermin);
-      this.FreeTermins.push(FreeDates);
-    });
+    this.paginationVisits=[]
+    this.busyTermins = [];
+
+this.FreeTermins =  VisitsTable.map(hour=>new Date(`${form.value.date.toString().slice(0, 15)} ${hour}`));
 
     this.doctors = this.doctorService.getArrayDoctors().filter((doc) => {
       return (
@@ -181,7 +173,7 @@ this.paginationVisits=[]
           this.citiesSelect.length === 0)
       )});
 
-      this.busyTermins = [];
+
       this.doctors.forEach(doc=>{
         const checkTerminisBusy = (s) => {
           doc.visits.forEach((visit) => {
@@ -193,11 +185,10 @@ this.paginationVisits=[]
           });
         };
 
-        if (
-          !doc.visits ||
-          doc.visits?.findIndex(
-            (visit) => visit.start.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0 ||
-          doc.visits?.findIndex((visit) => visit.end.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0
+    if (
+      !doc.visits ||
+      doc.visits?.findIndex((visit) => visit.start.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0 ||
+      doc.visits?.findIndex((visit) => visit.end.toString().slice(0, 10) === this.FreeTermins[0].toISOString().slice(0, 10)) < 0
         ) {
           this.FreeTermins.forEach((termin) => {
             this.busyTermins.push(termin.getTime());
@@ -211,23 +202,22 @@ this.paginationVisits=[]
               displayVisit: `${termin.toLocaleDateString()}  godzina: ${termin.toLocaleTimeString()}`,
             });
           });
-        } else {
-              this.FreeTermins.forEach((termin) => {
-                checkTerminisBusy(termin);
-                if (!this.busyTermins.includes(termin.getTime())) {
-                  this.busyTermins.push(termin.getTime());
-                  this.filteredVisits.push({
-                    id: doc.id,
-                    name: doc.name,
-                    lastname: doc.lastname,
-                    specjalizations: doc.specjalizations,
-                    visit: termin.toString(),
-                    city: doc.city,
-                    displayVisit: `${termin.toLocaleDateString()}  godzina:${termin.toLocaleTimeString()}`,
-                  });
-                }
-              });
-
+      } else {
+          this.FreeTermins.forEach((termin) => {
+            checkTerminisBusy(termin);
+            if (!this.busyTermins.includes(termin.getTime())) {
+              this.busyTermins.push(termin.getTime());
+              this.filteredVisits.push({
+                id: doc.id,
+                name: doc.name,
+                lastname: doc.lastname,
+                specjalizations: doc.specjalizations,
+                visit: termin.toString(),
+                city: doc.city,
+                 displayVisit: `${termin.toLocaleDateString()}  godzina:${termin.toLocaleTimeString()}`,
+                });
+            }
+         });
         }
         this.displayVisits = true;
         this.filteredVisits = this.filteredVisits.sort((a, b) => a.visit.localeCompare(b.visit));
@@ -235,7 +225,7 @@ this.paginationVisits=[]
       })
   }
 
-  onAddVisit(id: string, visit: string) {
+  onAddVisit(id: string) {
     this.doctorService.getDoctor(id).subscribe((doctorData) => {
       this.doctor = {
         id: doctorData._id,
@@ -248,7 +238,6 @@ this.paginationVisits=[]
         visits: doctorData.visits,
       };
     });
-
       this.patient = {
         id: this.patient.id,
         login: this.patient.login,
@@ -257,27 +246,23 @@ this.paginationVisits=[]
         lastname: this.patient.lastname,
         visits: this.updatingVisitsPatients,
       };
-
     this.displayVerify = true;
   }
 
   onVerifyVisit(id: string, visit: string) {
     const title = prompt('Podaj przyczyne wizyty');
-    this.visitsForDoc = [];
-    this.visitsForPat = [];
     this.updatingVisitsDoctors = [];
     this.updatingVisitsPatients = [];
     const visitStartDate = new Date(visit);
-    const endTimeVisit = visitStartDate.getTime() + 1800000;
-    const visitEndDate = new Date(endTimeVisit);
+    const visitEndDate = new Date(visitStartDate.getTime() + 1800000);
 
-    this.visitsForDoc.push({
+    this.updatingVisitsDoctors.push({
       title: `${this.patient.name} ${this.patient.lastname} ${title}`,
       start: visitStartDate,
       end: visitEndDate,
       id: this.patientId,
     });
-    this.visitsForPat.push({
+    this.updatingVisitsPatients.push({
       title: `Doktor ${this.doctor.name} ${this.doctor.lastname} ${title}`,
       start: visitStartDate,
       end: visitEndDate,
@@ -285,19 +270,14 @@ this.paginationVisits=[]
     });
 
     if (this.patient.visits) {
-      this.updatingVisitsPatients = this.patient.visits?.concat([
-        ...this.visitsForPat,
-      ]);
+      this.updatingVisitsPatients = this.patient.visits?.concat([...this.updatingVisitsPatients]);
     } else {
-      this.updatingVisitsPatients = this.visitsForPat;
+      this.updatingVisitsPatients = this.updatingVisitsPatients;
     }
-
     if (this.doctor.visits) {
-      this.updatingVisitsDoctors = this.doctor.visits?.concat([
-        ...this.visitsForDoc,
-      ]);
+      this.updatingVisitsDoctors = this.doctor.visits?.concat([...this.updatingVisitsDoctors]);
     } else {
-      this.updatingVisitsDoctors = this.visitsForDoc;
+      this.updatingVisitsDoctors = this.updatingVisitsDoctors;
     }
 
     this.patientService.updatePatient(
@@ -361,27 +341,16 @@ this.paginationVisits=[]
     });
     this.displayDelete = true;
   }
-  onDeleteVisit(title: any, start: any, end: any, id: string) {
+
+  onDeleteVisit(title: string, start: Date, end: Date, id: string) {
     this.updatingVisitsPatients = [];
     this.updatingVisitsDoctors = [];
-
     this.updatingVisitsPatients = this.patient.visits.filter((visit) => {
-      return (
-        title !== visit.title ||
-        id !== visit.id ||
-        start !== visit.start ||
-        end !== visit.end
-      );
+      return (title !== visit.title || id !== visit.id || start !== visit.start || end !== visit.end);
     });
-
     this.updatingVisitsDoctors = this.doctor.visits.filter((visit) => {
-      return (
-        this.patientId !== visit.id ||
-        start !== visit.start ||
-        end !== visit.end
-      );
+      return (this.patientId !== visit.id || start !== visit.start || end !== visit.end );
     });
-
     this.patientService.updatePatient(
       this.patientId,
       this.patient.login,
@@ -390,7 +359,6 @@ this.paginationVisits=[]
       this.patient.lastname,
       this.updatingVisitsPatients
     );
-
     this.doctorService.updateDoctor(
       this.doctor.id,
       this.doctor.login,

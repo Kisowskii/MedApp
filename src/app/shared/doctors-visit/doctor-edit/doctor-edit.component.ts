@@ -15,7 +15,7 @@ export class DoctorEditComponent implements OnInit {
   addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;
   specjalisations: any = [];
-  docConvertSpec: any = [];
+
   private mode = 'create';
   private doctorId: string;
   doctor: Doctor;
@@ -27,19 +27,14 @@ export class DoctorEditComponent implements OnInit {
 
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
-
-    // Add our fruit
     if (value) {
       this.specjalisations.push(value);
     }
-
-    // Clear the input value
     event.chipInput!.clear();
   }
 
   remove(spec: []): void {
     const index = this.specjalisations.indexOf(spec);
-
     if (index >= 0) {
       this.specjalisations.splice(index, 1);
     }
@@ -49,9 +44,8 @@ export class DoctorEditComponent implements OnInit {
     this.route.paramMap.subscribe((paramMap: ParamMap) => {
       if (paramMap.has('doctorId')) {
         this.mode = 'edit'
-      this.doctorId = paramMap.get('doctorId');
-      this.doctorsService.getDoctor(this.doctorId).subscribe((doctorData) => {
-
+        this.doctorId = paramMap.get('doctorId');
+        this.doctorsService.getDoctor(this.doctorId).subscribe((doctorData) => {
         this.doctor = {
           id: doctorData._id,
           login: doctorData.login,
@@ -63,10 +57,10 @@ export class DoctorEditComponent implements OnInit {
           visits: doctorData.visits,
         };
       });
-    }else{
+     }else{
       this.mode = 'create';
       this.doctorId = null;
-    }
+     }
     });
   }
 
@@ -96,8 +90,6 @@ export class DoctorEditComponent implements OnInit {
       form.value.visits,
     );
   }
-
-
     this.specjalisations = [];
     form.resetForm();
   }
