@@ -69,6 +69,7 @@ export class DoctorsComponent implements OnInit {
     public patientService: PatientsService
   ) {}
   handleDateSelect(selectInfo: DateSelectArg) {
+    this.displayVisit = false;
     const title = prompt('Dodaj nazwisko pacjenta i przyczyne wizyty');
     const calendarApi = selectInfo.view.calendar;
     calendarApi.unselect();
@@ -202,6 +203,7 @@ export class DoctorsComponent implements OnInit {
         this.updatingVisitsPatients
       )
     }
+    this.displayVisit = false;
   }
 
 }

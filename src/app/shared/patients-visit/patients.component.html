@@ -19,27 +19,21 @@
           <mat-expansion-panel-header>
             {{ visit.title }}
           </mat-expansion-panel-header>
-          <p>Od {{ visit.start }}</p>
-          <p>Do {{ visit.end }}</p>
+          <p>Od {{ visit.displayDate}}</p>
 
           <button
             mat-raised-button
             color="accent"
-            (click)="
-              onRemoveVisit(visit.id)
-            "
+            (click)="onRemoveVisit(visit.id)"
             *ngIf="!displayDelete"
           >
             Usuń wizyte
           </button>
-
           <button
             mat-raised-button
             color="accent"
             type="submit"
-            (click)="
-              onDeleteVisit(visit.title, visit.start, visit.end, visit.id)
-            "
+            (click)="onDeleteVisit(visit.title, visit.start, visit.end, visit.id)"
             *ngIf="displayDelete"
           >
             Potwierdzam usunięcie wizyty

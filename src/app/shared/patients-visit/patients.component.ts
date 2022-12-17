@@ -42,30 +42,30 @@ export class PatientsComponent implements OnInit {
   paginator: MatPaginator;
   specSelect: string;
   citiesSelect: string[];
-  postsPerPage = 10;
-  currentPage = 1;
+  postsPerPage:number = 10;
+  currentPage:number = 1;
   doctors: Doctor[] = [];
   doctor: Doctor;
   patient: Patient;
   visits: Visit[] = [];
   private patientId: string;
-  displayDoctors = false;
-  displayVisits = false;
-  displaySearching = false;
-  displaySeachingplace = false;
-  displayVerify = false;
-  displayMyVisits = false;
-  displayDelete = false;
-  updatingVisitsDoctors = [];
-  updatingVisitsPatients = [];
+  displayDoctors:boolean = false;
+  displayVisits:boolean = false;
+  displaySearching:boolean = false;
+  displaySeachingplace:boolean = false;
+  displayVerify:boolean = false;
+  displayMyVisits:boolean = false;
+  displayDelete:boolean = false;
+  updatingVisitsDoctors:Visit[] = [];
+  updatingVisitsPatients:Visit[] = [];
   filteredVisits = [];
   FreeTermins = [];
-  busyTermins = [];
+  busyTermins:Visit[]= [];
   paginationVisits = [];
   cits = new FormControl('');
   cities: string[] = [];
   specjalizations = [];
-  myVisits = [];
+  myVisits:Visit[] = [];
   private doctorsSub: Subscription;
 
   constructor(
@@ -94,10 +94,15 @@ export class PatientsComponent implements OnInit {
     this.displaySeachingplace = false;
     this.displayVisits = false;
     if (this.updatingVisitsPatients.length < 1) {
-      this.myVisits = this.patient?.visits;
+      this.myVisits = this.patient?.visits
     } else {
       this.myVisits = this.updatingVisitsPatients;
     }
+    this.myVisits = this.myVisits.map<Visit>((visit)=>{
+      const sth = `${visit.start.toLocaleTimeString()} - ${visit.end.toLocaleTimeString()}`
+      return { ...visit, displayDate: sth,      }
+    }
+    );
   }
 
   onDisplayFinding() {

@@ -3,4 +3,5 @@ export interface Visit {
   start: Date;
   end: Date;
   id: string;
+  displayDate?:any;
 }
